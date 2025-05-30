@@ -13,9 +13,12 @@ def check_command_in_path(cmd):
 command_evaluations = {
     "exit": lambda exit_code: os._exit(int(exit_code)),
     "echo": lambda *args: print(" ".join(args)),
-    "type": lambda cmd, *_: print(f"{cmd} is a shell builtin")
+    "type": lambda cmd, *args: print(f"{cmd} is a shell builtin")
     if cmd in command_evaluations
     else (print(check_command_in_path(cmd)) if check_command_in_path(cmd)
           else print(f"{cmd}: not found")),
     "pwd": lambda : print(os.getcwd()),
+    "cd": lambda args: os.chdir(args)
+    if os.path.isdir(args)
+    else print(f"cd: {args}: No such file or directory"),
 }
