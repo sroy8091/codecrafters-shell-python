@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 
 def check_command_in_path(cmd):
@@ -9,16 +10,25 @@ def check_command_in_path(cmd):
         return f"{cmd} is {cmd_path}"
     return None
 
+def execute_type_cmd(cmd):
+    if cmd in command_evaluations:
+        print(f"{cmd} is a shell builtin")
+    elif check_command_in_path(cmd):
+        print(check_command_in_path(cmd))
+    else:
+        raise NotImplementedError(f"{cmd}: not found")
+
+def execute_cd_cmd(args):
+    if os.path.isdir(os.path.expanduser(args)):
+        os.chdir(os.path.expanduser(args))
+    else:
+        raise FileNotFoundError(f"cd: {args}: No such file or directory")
+
 
 command_evaluations = {
-    "exit": lambda exit_code: os._exit(int(exit_code)),
+    "exit": lambda exit_code: sys.exit(int(exit_code)),
     "echo": lambda *args: print(" ".join(args)),
-    "type": lambda cmd: print(f"{cmd} is a shell builtin")
-    if cmd in command_evaluations
-    else (print(check_command_in_path(cmd)) if check_command_in_path(cmd)
-          else print(f"{cmd}: not found")),
+    "type": execute_type_cmd,
     "pwd": lambda : print(os.getcwd()),
-    "cd": lambda args: os.chdir(os.path.expanduser(args))
-    if os.path.isdir(os.path.expanduser(args))
-    else print(f"cd: {args}: No such file or directory"),
+    "cd": execute_cd_cmd,
 }
