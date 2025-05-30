@@ -18,7 +18,7 @@ command_evaluations = {
     else (print(check_command_in_path(cmd)) if check_command_in_path(cmd)
           else print(f"{cmd}: not found")),
     "pwd": lambda : print(os.getcwd()),
-    "cd": lambda args: os.chdir(args)
-    if os.path.isdir(args)
+    "cd": lambda args: os.chdir(os.path.expanduser(args))
+    if os.path.isdir(os.path.expanduser(args))
     else print(f"cd: {args}: No such file or directory"),
 }
