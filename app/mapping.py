@@ -17,4 +17,5 @@ command_evaluations = {
     if cmd in command_evaluations
     else (print(check_command_in_path(cmd)) if check_command_in_path(cmd)
           else print(f"{cmd}: not found")),
+    "pwd": lambda : print(os.getcwd()),
 }
