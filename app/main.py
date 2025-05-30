@@ -10,7 +10,7 @@ def main():
 
         # Wait for user input
         command = input()
-        print(evaluate(command))
+        evaluate(command)
 
 
 if __name__ == "__main__":
