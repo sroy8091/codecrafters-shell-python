@@ -1,7 +1,20 @@
 import os
+import shutil
+
+
+def check_command_in_path(cmd):
+    # Use shutil.which to find executable in PATH
+    cmd_path = shutil.which(cmd)
+    if cmd_path:
+        return f"{cmd} is {cmd_path}"
+    return None
+
 
 command_evaluations = {
     "exit": lambda exit_code: os._exit(int(exit_code)),
     "echo": lambda *args: print(" ".join(args)),
-    "type": None,
+    "type": lambda cmd, *_: print(f"{cmd} is a shell builtin")
+    if cmd in command_evaluations
+    else (print(check_command_in_path(cmd)) if check_command_in_path(cmd)
+          else print(f"{cmd}: not found")),
 }
