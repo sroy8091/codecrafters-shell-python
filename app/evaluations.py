@@ -1,3 +1,4 @@
+import shlex
 import shutil
 import subprocess
 
@@ -5,8 +6,9 @@ from app.mapping import command_evaluations
 
 
 def evaluate(command):
-    premise, *args = command.split()
-    # print(premise in command_evaluations)
+    premise, *args = shlex.split(command)
+    # sanitized_args = sanitise_commands(args)
+
     if premise in command_evaluations:
         return command_evaluations[premise](*args)
     elif shutil.which(premise):
@@ -14,3 +16,10 @@ def evaluate(command):
     else:
         print(f"{premise}: command not found")
         return None
+
+
+def sanitise_commands(args):
+    result = []
+    for item in args:
+        result.append(item.strip('"').strip("'"))
+    return result
