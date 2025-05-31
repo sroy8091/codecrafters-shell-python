@@ -12,10 +12,10 @@ def main():
 
     while True:
         # Uncomment this block to pass the first stage
-        sys.stdout.write("$ ")
+        # sys.stdout.write("$ ")
 
         # Wait for user input
-        command = input()
+        command = input("$ ")
         evaluate(command)
 
 
