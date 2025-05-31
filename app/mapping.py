@@ -24,6 +24,11 @@ def execute_cd_cmd(args):
     else:
         raise FileNotFoundError(f"cd: {args}: No such file or directory\n")
 
+def execute_history():
+    with open(os.path.expanduser("~/.zsh_history")) as f:
+        for line in f:
+            print(line.strip())
+
 
 command_evaluations = {
     "exit": lambda exit_code: sys.exit(int(exit_code)),
@@ -31,4 +36,5 @@ command_evaluations = {
     "type": execute_type_cmd,
     "pwd": lambda : print(os.getcwd()),
     "cd": execute_cd_cmd,
+    "history": execute_history
 }
