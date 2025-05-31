@@ -1,4 +1,6 @@
 import os
+import readline
+import sys
 
 from app.mapping import command_evaluations
 
@@ -21,10 +23,16 @@ def get_executables_from_path():
 
 
 def complete(text, state):
-    # Combine builtin commands with executables from PATH
-    commands = list(command_evaluations.keys()) + list(get_executables_from_path())
-    # Filter commands that match the text
+    commands = set(list(command_evaluations.keys()) + list(get_executables_from_path()))
     matches = [cmd + " " for cmd in commands if cmd.startswith(text)]
-    # Sort matches for consistent ordering
     matches.sort()
     return matches[state] if state < len(matches) else None
+
+def display_matches_hook(substitution, matches, longest_match_length):
+    """Custom display function for matches"""
+    print()  # Move to a new line
+
+    print(*matches, sep=" ")
+    print("$ ", end="")  # Print prompt on new line
+    sys.stdout.write(readline.get_line_buffer())  # Write current input
+    sys.stdout.flush()
