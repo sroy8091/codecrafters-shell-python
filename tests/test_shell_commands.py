@@ -105,10 +105,15 @@ class TestShellCommands:
         evaluate(f"echo hello world 1> {output_file}")
         assert output_file.read_text() == "hello world\n"
 
-    def test_error_redirection(self, tmp_path):
+    def test_error_redirection_for_builtin(self, tmp_path):
         error_file = tmp_path / "err.txt"
         evaluate(f"type nonexistentcommand 2> {error_file}")
         assert "not found" in error_file.read_text()
+
+    def test_error_redirection_for_external(self, tmp_path):
+        error_file = tmp_path / "err.txt"
+        evaluate(f"cat {tmp_path} 2> {error_file}")
+        assert error_file.read_text() == f"cat: {tmp_path}: Is a directory\n"
 
     def test_redirection_with_external_command(self, tmp_path):
         output_file = tmp_path / "out.txt"
@@ -172,3 +177,25 @@ class TestShellCommands:
         output_file = tmp_path / "out.txt"
         evaluate(f"python --version >> {output_file}")
         assert output_file.read_text() == "Python 3.13.3\n"
+
+    def test_append_error_redirection_for_builtin(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        output_file.write_text("old content\n")
+        evaluate(f"type nonexistent_cmd 2>> {output_file}")
+        assert output_file.read_text() == "old content\ntype: nonexistent_cmd: not found\n"
+
+    def test_append_error_redirection_for_builtin_for_new_file(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        evaluate(f"type nonexistent_cmd 2>> {output_file}")
+        assert output_file.read_text() == "type: nonexistent_cmd: not found\n"
+
+    def test_append_error_redirection_for_external(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        output_file.write_text("old content\n")
+        evaluate(f"cat {tmp_path} 2>> {output_file}")
+        assert output_file.read_text() == f"old content\ncat: {tmp_path}: Is a directory\n"
+
+    def test_append_error_redirection_for_external_for_new_file(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        evaluate(f"cat {tmp_path} 2>> {output_file}")
+        assert output_file.read_text() == f"cat: {tmp_path}: Is a directory\n"

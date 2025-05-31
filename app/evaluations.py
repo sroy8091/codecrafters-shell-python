@@ -29,6 +29,11 @@ def evaluate(command):
         args = args[:-2]
         append_mode = True
 
+    if "2>>" in args:
+        error_location = args[-1]
+        args = args[:-2]
+        append_mode = True
+
     if premise in command_evaluations:
         return evaluate_builtin_commands(premise, args, output_location, error_location, append_mode)
     elif shutil.which(premise):
@@ -57,7 +62,7 @@ def evaluate_builtin_commands(premise, args, output_location, error_location, ap
             return None
     except Exception as e:
         if error_location:
-            write_builtin_output(error_location, f"{premise}: {e.args[0]}")
+            write_builtin_output(error_location, f"{premise}: {e.args[0]}", append_mode)
         else:
             print(e.args[0], end='')
         return None
@@ -65,15 +70,15 @@ def evaluate_builtin_commands(premise, args, output_location, error_location, ap
 def evaluate_external_commands(premise, args, output_location, error_location, append_mode):
     if output_location:
         if append_mode:
-            # with open(output_location, 'a') as f:
-            #     if os.path.getsize(output_location) > 0:  # Check if file is not empty
-            #         f.write('\n')
             with open(output_location, 'a') as f:
                 return subprocess.run([premise] + args, stdout=f)
         else:
             with open(output_location, 'w') as f:
                 return subprocess.run([premise] + args, stdout=f)
     elif error_location:
+        if append_mode:
+            with open(error_location, 'a') as f:
+                return subprocess.run([premise] + args, stderr=f)
         with open(error_location, 'w') as f:
             return subprocess.run([premise] + args, stderr=f)
     else:
