@@ -11,9 +11,6 @@ def main():
     readline.set_completion_display_matches_hook(display_matches_hook)
 
     while True:
-        # Uncomment this block to pass the first stage
-        # sys.stdout.write("$ ")
-
         # Wait for user input
         command = input("$ ")
         evaluate(command)

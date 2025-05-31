@@ -1,5 +1,8 @@
 [![progress-banner](https://backend.codecrafters.io/progress/shell/b29f799d-d25e-4e61-8773-bd8c41e9d75f)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
 
+# LET'S FUCKING GOOOOOOO.......
+## Completed all the stages, and I am closing my laptop for now :sunglasses:
+
 This is a starting point for Python solutions to the
 ["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
 
