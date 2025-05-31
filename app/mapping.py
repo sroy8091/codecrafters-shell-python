@@ -16,13 +16,13 @@ def execute_type_cmd(cmd):
     elif check_command_in_path(cmd):
         print(check_command_in_path(cmd))
     else:
-        raise NotImplementedError(f"{cmd}: not found")
+        raise NotImplementedError(f"{cmd}: not found\n")
 
 def execute_cd_cmd(args):
     if os.path.isdir(os.path.expanduser(args)):
         os.chdir(os.path.expanduser(args))
     else:
-        raise FileNotFoundError(f"cd: {args}: No such file or directory")
+        raise FileNotFoundError(f"cd: {args}: No such file or directory\n")
 
 
 command_evaluations = {

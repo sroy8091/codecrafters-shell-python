@@ -45,7 +45,7 @@ class TestShellCommands:
     def test_cd_nonexistent_dir(self, capsys):
         evaluate("cd /nonexistent/directory")
         captured = capsys.readouterr()
-        assert captured.out == "cd: /nonexistent/directory: No such file or directory"
+        assert captured.out == "cd: /nonexistent/directory: No such file or directory\n"
 
     def test_cd_to_home(self):
         original_dir = os.getcwd()
@@ -69,7 +69,7 @@ class TestShellCommands:
     def test_type_nonexistent_command(self, capsys):
         evaluate("type nonexistent_command")
         captured = capsys.readouterr()
-        assert "not found" in captured.out
+        assert captured.out == "nonexistent_command: not found\n"
 
     # Exit command tests
     def test_exit_with_valid_code(self):
@@ -138,3 +138,37 @@ class TestShellCommands:
         evaluate(f"echo second > {file2}")
         assert file1.read_text() == "first\n"
         assert file2.read_text() == "second\n"
+
+    def test_append_redirection_for_builtin(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        output_file.write_text("old content")
+        evaluate(f"echo new content >> {output_file}")
+        assert output_file.read_text() == "old contentnew content\n"
+
+    def test_append_redirection_for_builtin_with_1(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        output_file.write_text("old content")
+        evaluate(f"echo new content 1>> {output_file}")
+        assert output_file.read_text() == "old contentnew content\n"
+
+    def test_append_redirection_for_builtin_for_new_file(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        evaluate(f"echo new content 1>> {output_file}")
+        assert output_file.read_text() == "new content\n"
+
+    def test_append_redirection_for_external(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        output_file.write_text("old content")
+        evaluate(f"python --version >> {output_file}")
+        assert output_file.read_text() == f"old contentPython 3.13.3\n"
+
+    def test_append_redirection_for_external_with_1(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        output_file.write_text("old content")
+        evaluate(f"python --version 1>> {output_file}")
+        assert output_file.read_text() == "old contentPython 3.13.3\n"
+
+    def test_append_redirection_for_external_for_new_file(self, tmp_path):
+        output_file = tmp_path / "out.txt"
+        evaluate(f"python --version >> {output_file}")
+        assert output_file.read_text() == "Python 3.13.3\n"
