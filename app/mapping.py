@@ -1,4 +1,5 @@
 import os
+import readline
 import shutil
 import sys
 
@@ -25,9 +26,9 @@ def execute_cd_cmd(args):
         raise FileNotFoundError(f"cd: {args}: No such file or directory\n")
 
 def execute_history():
-    with open(os.path.expanduser("~/.zsh_history")) as f:
-        for line in f:
-            print(line.strip())
+    history_length = readline.get_current_history_length()
+    for i in range(1, history_length + 1):
+        print(f" {i}  {readline.get_history_item(i)}")
 
 
 command_evaluations = {
