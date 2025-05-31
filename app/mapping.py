@@ -25,9 +25,10 @@ def execute_cd_cmd(args):
     else:
         raise FileNotFoundError(f"cd: {args}: No such file or directory\n")
 
-def execute_history():
+def execute_history(args=None):
     history_length = readline.get_current_history_length()
-    for i in range(1, history_length + 1):
+    start = 1 if args is None else history_length-int(args)+1
+    for i in range(start, history_length + 1):
         print(f" {i}  {readline.get_history_item(i)}")
 
 
